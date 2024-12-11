@@ -19,6 +19,35 @@ func ToSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
+func splitIgnoringEscapedCommas(input string) []string {
+	var result []string
+	var current strings.Builder
+	escaped := false
+
+	for _, char := range input {
+		if char == '\\' {
+			escaped = !escaped
+			current.WriteRune(char) // Keep the backslash for now
+			continue
+		}
+
+		if char == ',' && !escaped {
+			// Split at non-escaped comma
+			result = append(result, strings.ReplaceAll(current.String(), `\,`, `,`))
+			current.Reset()
+		} else {
+			current.WriteRune(char)
+		}
+
+		// Reset escaped flag
+		escaped = false
+	}
+
+	// Add the final segment
+	result = append(result, strings.ReplaceAll(current.String(), `\,`, `,`))
+	return result
+}
+
 // NewProperties is a helper method to instantiate a new properties ordered
 // map.
 func NewProperties() *orderedmap.OrderedMap[string, *Schema] {
