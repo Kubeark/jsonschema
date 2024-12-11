@@ -643,7 +643,7 @@ func (t *Schema) structKeywordsFromTags(f reflect.StructField, parent *Schema, p
 		}
 	}
 
-	extras := strings.Split(f.Tag.Get("jsonschema_extras"), ",")
+	extras := splitIgnoringEscapedCommas(f.Tag.Get("jsonschema_extras"))
 	t.extraKeywords(extras)
 }
 
